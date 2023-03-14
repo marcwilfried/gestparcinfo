@@ -62,7 +62,7 @@ class InterventionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                ->label('Titre')
+                ->label('Numéro de l\'intervention')
                 ->searchable()
                 ->sortable(),
                 Tables\Columns\TextColumn::make('description')
@@ -188,8 +188,10 @@ class InterventionResource extends Resource
                 Grid::make(3)
                 ->schema([
                     TextInput::make('title')
-                        ->label('Titre')
-                        ->reactive(),
+                        ->label('Numéro de l\'intervention')
+                        ->default('INTERV-' . random_int(100000, 999999))
+                        ->disabled()
+                        ->required(),
                     TextInput::make('motif')
                         ->label('Motif')
                         ->required()

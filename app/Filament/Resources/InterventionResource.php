@@ -189,7 +189,7 @@ class InterventionResource extends Resource
                 ->schema([
                     TextInput::make('title')
                         ->label('Numéro de l\'intervention')
-                        ->default('INTERV-' . random_int(100000, 999999))
+                        ->default('INTERV-' . random_int(100, 999))
                         ->disabled()
                         ->required(),
                     TextInput::make('motif')

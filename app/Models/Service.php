@@ -23,6 +23,10 @@ class Service extends Model
     {
         return $this->hasMany(Appareil::class);
     }
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 
     public function userCreated()
     {

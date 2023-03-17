@@ -45,6 +45,7 @@ class ServiceResource extends Resource
                     Forms\Components\TextInput::make('title')
                     ->label('Département')
                     ->maxLength(255),
+
                     Forms\Components\MarkdownEditor::make('description')
                     ->label('Description')
                     ->maxLength(255)

@@ -6,8 +6,8 @@ use App\Models\User;
 use Components\Card;
 use App\Models\Stock;
 use Components\Button;
+use App\Models\Service;
 use App\Models\Logiciel;
-use App\Models\Service;;
 use Components\TableColumn;
 use App\Models\TypeAppareil;
 use App\Models\Caracteristique;
@@ -35,11 +35,13 @@ class Appareil extends Model implements HasMedia
         'num_serie',
         'etat',
         'disponibilite',
+        'userapp',
         'stock_id',
         'type_appareil_id',
         'service_id',
         'created_at',
         'updated_at',
+        'user_id',
         'image',
     ];
 
@@ -91,6 +93,7 @@ class Appareil extends Model implements HasMedia
     {
         return $this->belongsToMany(Intervention::class);
     }
+
 
     public function userCreated()
     {

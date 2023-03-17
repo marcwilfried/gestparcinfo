@@ -85,6 +85,11 @@ class AppareilResource extends Resource
                         ->required()
                         ->maxLength(255),
 
+                        Forms\Components\Select::make('user_id')
+                        ->label('Utilisateur')
+                        ->relationship('user', 'name')
+                        ->required(),
+
                         Forms\Components\Select::make('type_appareil_id')
                         ->label('Type Appareil')
                         ->relationship('type_appareil', 'title')
@@ -106,9 +111,11 @@ class AppareilResource extends Resource
                         ->relationship('caracteristiques', 'title')
                         ->required(),
 
-                        SpatieMediaLibraryFileUpload::make('image')
-                        ->label('Image')
-                        ->collection('image'),
+                        Card::make()->schema([
+                            SpatieMediaLibraryFileUpload::make('image')
+                            ->label('Image')
+                            ->collection('image'),
+                        ])
                     ])
                     ->columns(2),
                 ])
@@ -183,6 +190,7 @@ class AppareilResource extends Resource
                 ->searchable()
                 ->sortable(),
 
+
                 Tables\Columns\ToggleColumn::make('etat')
                 ->label('Etat de l\'appareil')
                 ->toggleable(),
@@ -221,6 +229,7 @@ class AppareilResource extends Resource
                     }),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
 
@@ -255,6 +264,7 @@ class AppareilResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
+            ->whereBelongsTo(auth()->user())
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);

@@ -13,5 +13,8 @@ class CreateAppareil extends CreateRecord
     protected function getRedirectUrl(): string{
         return $this->getResource()::getUrl('index');
     }
-
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'L\'utilisateur à été crée';
+    }
 }

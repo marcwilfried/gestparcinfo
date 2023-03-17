@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Service;
+use App\Models\Appareil;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Select;
 use Laravel\Jetstream\HasProfilePhoto;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -49,6 +51,7 @@ class User extends Authenticatable implements HasMedia
         'post_travail',
         'email',
         'password',
+        'service_id',
     ];
 
     /**
@@ -81,6 +84,14 @@ class User extends Authenticatable implements HasMedia
         'profile_photo_url',
     ];
 
+    public function appareils()
+    {
+        return $this->hasMany(Appareil::class);
+    }
+    public function service()
+    {
+        return $this->belongsTo(Service::class);
+    }
      public function registerMediaConversions(Media $media = null): void
     {
         $this->addMediaConversion('thumb')
@@ -96,5 +107,6 @@ class User extends Authenticatable implements HasMedia
         ->quality(80)
         ->withResponsiveImages();
     }
+
 }
 

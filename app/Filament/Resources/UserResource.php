@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use Filament\Pages\Page;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
@@ -22,6 +23,7 @@ use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Actions\RestoreAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Tables\Actions\DeleteBulkAction;
 use App\Filament\Resources\UserResource\Pages;
 use Filament\Tables\Actions\ForceDeleteAction;
@@ -52,7 +54,7 @@ class UserResource extends Resource
         return $form
             ->schema([
                 Card::make()->schema([
-                    Grid::make(2)->schema([
+                    Grid::make(3)->schema([
                         TextInput::make('name')
                         ->label('Nom')
                         ->required()
@@ -60,6 +62,10 @@ class UserResource extends Resource
 
                         TextInput::make('prenom')
                         ->label('Prénoms')
+                        ->maxLength(255),
+
+                        TextInput::make('phone')
+                        ->label('Téléphone')
                         ->maxLength(255),
                     ]),
                     Grid::make(2)->schema([
@@ -74,7 +80,8 @@ class UserResource extends Resource
                         ->label('Mot de passe')
                         ->password()
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-                        ->required(),
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateUser)),
                     ]),
                     Grid::make(2)->schema([
                         Select::make('type_user')
@@ -82,14 +89,21 @@ class UserResource extends Resource
                         ->multiple()
                         ->required(),
 
-                        TextInput::make('phone')
-                        ->label('Téléphone')
-                        ->maxLength(255),
+                        Select::make('service_id')
+                        ->label('Département')
+                        ->relationship('service', 'title')
+                        ->required(),
                     ]),
+                    /* Card::make()->schema([
+                        CheckboxList::make('appareils')
+                        ->relationship('appareils', 'title'),
+                    ]), */
+                    Card::make()->schema([
+                        SpatieMediaLibraryFileUpload::make('image')
+                        ->label('Image')
+                        ->collection('image'),
+                    ])
 
-                    SpatieMediaLibraryFileUpload::make('image')
-                    ->label('Image')
-                    ->collection('image'),
                 ])
             ]);
     }

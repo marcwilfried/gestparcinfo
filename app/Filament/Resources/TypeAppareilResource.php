@@ -54,6 +54,7 @@ class TypeAppareilResource extends Resource
                 ->label('Crée le')
                 ->dateTime(),
             ])
+            ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

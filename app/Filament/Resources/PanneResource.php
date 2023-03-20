@@ -66,6 +66,7 @@ class PanneResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
             ])
+            ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

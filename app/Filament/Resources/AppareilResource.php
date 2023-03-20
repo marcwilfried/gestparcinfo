@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use Filament\Forms\Components\Placeholder;
 use Filament\Tables;
 use App\Models\Appareil;
+use Filament\Pages\Page;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Facades\Filament;
@@ -30,6 +30,7 @@ use Filament\Pages\Actions\RestoreAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\ForceDeleteAction;
@@ -71,34 +72,34 @@ class AppareilResource extends Resource
                     Card::make()->schema([
                         Forms\Components\TextInput::make('title')
                         ->label('Nom de l\'appareil')
-                        ->required()
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil))
                         ->maxLength(255),
 
                         Forms\Components\TextInput::make('marque')
                         ->label('Marque')
-                        ->required()
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil))
                         ->maxLength(255),
 
                         Forms\Components\TextInput::make('num_serie')
                         ->label('Numéro de serie')
                         ->unique(ignoreRecord: true)
-                        ->required()
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil))
                         ->maxLength(255),
 
                         Forms\Components\Select::make('user_id')
                         ->label('Utilisateur')
                         ->relationship('user', 'name')
-                        ->required(),
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
 
                         Forms\Components\Select::make('type_appareil_id')
                         ->label('Type Appareil')
                         ->relationship('type_appareil', 'title')
-                        ->required(),
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
 
                         Forms\Components\Select::make('service_id')
                         ->label('Département')
                         ->relationship('service', 'title')
-                        ->required(),
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
 
                         Forms\Components\Select::make('logiciel_id')
                         ->label('Logiciel')
@@ -109,7 +110,7 @@ class AppareilResource extends Resource
                         ->label('Caractéristiques')
                         ->multiple()
                         ->relationship('caracteristiques', 'title')
-                        ->required(),
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
 
                         Card::make()->schema([
                             SpatieMediaLibraryFileUpload::make('image')
@@ -203,6 +204,7 @@ class AppareilResource extends Resource
                 ->label('Crée le')
                 ->dateTime(),
             ])
+             ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
                 Filter::make('Appareil en stock')
@@ -263,11 +265,28 @@ class AppareilResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->whereBelongsTo(auth()->user())
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        if (auth()->user()->hasRole(['Employé'])) {
+            return parent::getEloquentQuery()
+                ->whereHas('user', function($q){
+                    $q->where('id', auth()->user()->id);
+                })
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
+        elseif (auth()->user()->hasRole(['Technicien', 'super_admin'])) {
+            return parent::getEloquentQuery()
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
+        else {
+            return parent::getEloquentQuery()
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
     }
+
 }
 

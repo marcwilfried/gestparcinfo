@@ -94,10 +94,13 @@ class UserResource extends Resource
                         ->relationship('service', 'title')
                         ->required(),
                     ]),
+
                     /* Card::make()->schema([
-                        CheckboxList::make('appareils')
-                        ->relationship('appareils', 'title'),
+                        Select::make('appareils')
+                        ->relationship('appareils', 'title')
+                        ->multiple(),
                     ]), */
+
                     Card::make()->schema([
                         SpatieMediaLibraryFileUpload::make('image')
                         ->label('Image')

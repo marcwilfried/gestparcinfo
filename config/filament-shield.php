@@ -27,16 +27,6 @@ return [
         'name' => 'filament_user',
     ],
 
-    'employé' => [
-        'enabled' => true,
-        'name' => 'Employé',
-    ],
-
-    'technicien' => [
-        'enabled' => true,
-        'name' => 'Technicien',
-    ],
-
     'permission_prefixes' => [
         'resource' => [
             'view',
@@ -51,6 +41,8 @@ return [
             'delete_any',
             'force_delete',
             'force_delete_any',
+           /*  'look',
+            'look_any', */
         ],
 
         'page' => 'page',

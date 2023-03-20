@@ -90,6 +90,7 @@ class InterventionResource extends Resource
                 ->dateTime()
                 ->toggleable(),
             ])
+            ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
@@ -141,7 +142,7 @@ class InterventionResource extends Resource
                             ->afterStateUpdated(function($state, callable $set){
                                 $piece = Piece::find($state);
                                 if ($piece){
-                                    $set('price', number_format($piece->price / 100,2));
+                                    $set('price', number_format($piece->price));
                                 }
                             })
                             ->columnSpan([

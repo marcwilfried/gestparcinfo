@@ -220,7 +220,6 @@ return [
     | for no max width.
     |
     */
-
     'layout' => [
         'actions' => [
             'modal' => [

@@ -20,6 +20,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Actions\RestoreAction;
@@ -46,7 +47,7 @@ class UserResource extends Resource
     protected static ?string $navigationLabel = 'Utilisateurs';
     protected static ?string $navigationGroup = 'ADMIN MANAGERS';
 
-    protected static bool $shouldRegisterNavigation = true;
+    protected static bool $shouldRegisterNavigation = false;
 
 
     public static function form(Form $form): Form

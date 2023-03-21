@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Select;
 use Laravel\Jetstream\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
+use Filament\Notifications\Notification;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Models\Permission;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -35,6 +36,12 @@ class User extends Authenticatable implements HasMedia
     use InteractsWithMedia;
     use SoftDeletes;
 
+    public function toDatabase(User $notifiable): array
+    {
+        return Notification::make()
+            ->title('Bienvenue')
+            ->getDatabaseMessage();
+    }
 
     /**
      * The attributes that are mass assignable.

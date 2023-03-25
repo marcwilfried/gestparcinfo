@@ -1,5 +1,5 @@
 <?php
- 
+
 return [
     /**
      * Disable the theme manager completely.
@@ -7,7 +7,7 @@ return [
      * theme and the default theme color should be
      * managed by the filament/filament package.
      */
-    'auto_register' => true,
+    'auto_register' => false,
 
     /**
      * If you are using vite instead of mix, you can set 'enable_vite'
@@ -49,5 +49,5 @@ return [
      *   - rose: rose.css
      */
 
-    'color_public_path' => 'vendor/yepsua-filament-themes/css/red.css',
+    'color_public_path' => 'vendor/yepsua-filament-themes/css/violet.css',
 ];

@@ -60,7 +60,8 @@ class PieceResource extends Resource
 
                         TextInput::make('price')
                             ->label('Prix Unitaire')
-                            ->numeric(),
+                            ->numeric()
+                            ->suffix('fcfa'),
                         SpatieMediaLibraryFileUpload::make('image')
                             ->label('Image')
                             ->collection('image'),
@@ -93,7 +94,8 @@ class PieceResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('price')
                     ->label('Prix unitaire')
-                    ->searchable(),
+                    ->searchable()
+                    ->suffix('fcfa'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Crée le')

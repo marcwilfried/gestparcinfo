@@ -26,17 +26,12 @@ class AppServiceProvider extends ServiceProvider
      * @return void
      */
     public function boot(): void
-    {  
+    {
         FilamentThemes::register(function() {
-            if (auth()->user()->hasRole(['Employé'])){
-                return app(Vite::class)('resources/css/filament.css');  
-            }
-            elseif (auth()->user()->hasRole(['Technicien', 'super_admin'])){
-                return app(Vite::class)('resources/css/app.css');  
-            }
+            return app(Vite::class)('resources/css/app.css');
         });
 
-    
+
 
        /*  Filament::serving(function () {
             Filament::registerNavigationGroups([

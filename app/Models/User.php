@@ -58,6 +58,7 @@ class User extends Authenticatable implements HasMedia
         'post_travail',
         'email',
         'password',
+        'email_verified_at',
         'service_id',
     ];
 

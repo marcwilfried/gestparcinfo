@@ -10,6 +10,9 @@ return [
         App\Filament\Resources\PanneResource::class,
         App\Filament\Resources\LogicielResource::class,
         App\Filament\Resources\TypeAppareilResource::class,
+        App\Filament\Resources\PieceResource::class,
+
+
 
     ],
     'excludes' => [

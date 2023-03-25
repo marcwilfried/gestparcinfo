@@ -10,11 +10,9 @@ class CreateAppareil extends CreateRecord
 {
     protected static string $resource = AppareilResource::class;
 
-    protected function getRedirectUrl(): string{
-        return $this->getResource()::getUrl('index');
-    }
+
     protected function getCreatedNotificationTitle(): ?string
     {
-        return 'L\'utilisateur à été crée';
+        return 'L\'Appareil à été bien crée';
     }
 }

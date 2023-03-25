@@ -5,11 +5,13 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Appareil;
+use App\Models\Logiciel;
 use Filament\Pages\Page;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Facades\Filament;
 use Tables\Actions\ViewAction;
+use App\Models\Caracteristique;
 use Tables\Columns\BadgeColums;
 use Filament\Resources\Resource;
 use Tables\Columns\ToggleColumn;
@@ -94,7 +96,8 @@ class AppareilResource extends Resource
                         Forms\Components\Select::make('type_appareil_id')
                         ->label('Type Appareil')
                         ->relationship('type_appareil', 'title')
-                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil))
+                        ->placeholder('Selectionez le type appareil'),
 
                         Forms\Components\Select::make('service_id')
                         ->label('Département')
@@ -103,13 +106,15 @@ class AppareilResource extends Resource
 
                         Forms\Components\Select::make('logiciel_id')
                         ->label('Logiciel')
+                        ->relationship('logiciels', 'title')
                         ->multiple()
-                        ->relationship('logiciels', 'title'),
+                        ->options(Logiciel::all()->pluck('title','id')),
 
                         Forms\Components\Select::make('caracteristique_id')
                         ->label('Caractéristiques')
-                        ->multiple()
                         ->relationship('caracteristiques', 'title')
+                        ->multiple()
+                        ->options(Caracteristique::all()->pluck('title','id'))
                         ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
 
                         Card::make()->schema([
@@ -191,7 +196,6 @@ class AppareilResource extends Resource
                 ->searchable()
                 ->sortable(),
 
-
                 Tables\Columns\ToggleColumn::make('etat')
                 ->label('Etat de l\'appareil')
                 ->toggleable(),
@@ -199,6 +203,11 @@ class AppareilResource extends Resource
                 Tables\Columns\ToggleColumn::make('disponibilite')
                 ->label('Disponibilité')
                 ->toggleable(),
+
+                Tables\Columns\TextColumn::make('user.name')
+                ->label('Utilusateur')
+                ->searchable()
+                ->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                 ->label('Crée le')

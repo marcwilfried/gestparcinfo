@@ -5,17 +5,22 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
+use App\Models\Appareil;
 use Filament\Pages\Page;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Tables\Actions\DeleteAction;
 use Tables\Filters\TrashedFilter;
+use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Fieldset;
+use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
@@ -24,6 +29,7 @@ use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Placeholder;
 use Filament\Tables\Actions\RestoreAction;
+use Phpsa\FilamentPasswordReveal\Password;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Tables\Actions\DeleteBulkAction;
 use App\Filament\Resources\UserResource\Pages;
@@ -67,19 +73,21 @@ class UserResource extends Resource
 
                         TextInput::make('phone')
                         ->label('Téléphone')
+                        ->tel()
                         ->maxLength(255),
                     ]),
                     Grid::make(2)->schema([
                         TextInput::make('email')
                         ->label('Email')
                         ->email()
-                        ->unique(ignoreRecord: true)
+                        ->unique(User::class, 'email',ignoreRecord: true)
                         ->required()
                         ->maxLength(255),
 
-                        TextInput::make('password')
+                        Password::make('password')
                         ->label('Mot de passe')
                         ->password()
+                        ->showIcon('heroicon-o-eye')
                         ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                         ->dehydrated(fn ($state) => filled($state))
                         ->required(fn (Page $livewire) => ($livewire instanceof CreateUser)),
@@ -87,6 +95,7 @@ class UserResource extends Resource
                     Grid::make(2)->schema([
                         Select::make('type_user')
                         ->relationship('roles', 'name')
+                        ->options(Role::all()->pluck('name','id'))
                         ->multiple()
                         ->required(),
 
@@ -97,9 +106,16 @@ class UserResource extends Resource
                     ]),
 
                     /* Card::make()->schema([
-                        Select::make('appareils')
-                        ->relationship('appareils', 'title')
-                        ->multiple(),
+                        Repeater::make('appareils')
+                            ->relationship()
+                            ->schema([
+                                Select::make('appareil_id')
+                                ->label('Appareils affecté à cet utilisateur')
+                                ->options(Appareil::query()->pluck('title',key:'id')),
+
+                            ])
+                            ->createItemButtonLabel('Ajouter un appareil')
+
                     ]), */
 
                     Card::make()->schema([
@@ -120,6 +136,9 @@ class UserResource extends Resource
                 SpatieMediaLibraryImageColumn::make('image')
                 ->label('Photo')
                 ->collection('image')
+                ->circular()
+                ->width(25)
+                ->height(25)
                 ->toggleable()
                 ->toggledHiddenByDefault(),
 
@@ -156,6 +175,8 @@ class UserResource extends Resource
             ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                /* Tables\Filters\Filter::make('verified')
+                ->query(fn (Builder $query): Builder => $query->whereNotNull('email_verified_at')), */
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
@@ -184,7 +205,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            //'view' => Pages\ViewUser::route('/{record}'),
+            'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }

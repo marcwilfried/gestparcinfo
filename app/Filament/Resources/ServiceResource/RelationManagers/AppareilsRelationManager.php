@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -23,8 +24,8 @@ class AppareilsRelationManager extends RelationManager
     {
         return $form
         ->schema([
-            Card::make()
-                ->schema([
+            Card::make()->schema([
+                Grid::make(2)->schema([
                     Forms\Components\TextInput::make('title')
                     ->label('Nom de l\'appareil')
                     ->maxLength(255),
@@ -32,25 +33,44 @@ class AppareilsRelationManager extends RelationManager
                     Forms\Components\TextInput::make('marque')
                     ->label('Marque')
                     ->maxLength(255),
+                ]),
 
+                Grid::make(2)->schema([
                     Forms\Components\TextInput::make('num_serie')
                     ->label('Numéro de serie')
                     ->unique(ignoreRecord: true)
                     ->required()
                     ->maxLength(255),
 
-                    Forms\Components\Toggle::make('etat')
-                    ->label('Etat de l\'appareil')
+                    Forms\Components\Select::make('user_id')
+                    ->label('Utilisateur')
+                    ->relationship('user', 'name')
                     ->required(),
+                ]),
 
-                    Forms\Components\Toggle::make('disponibilite')
-                    ->label('Disponibilité')
+                Grid::make(2)->schema([
+                    Forms\Components\Select::make('service_id')
+                    ->label('Département')
+                    ->relationship('service', 'title')
                     ->required(),
 
                     Forms\Components\Select::make('type_appareil_id')
                     ->label('Type Appareil')
                     ->relationship('type_appareil', 'title')
                     ->required(),
+
+                ]),
+
+                Grid::make(2)->schema([
+                    Forms\Components\Toggle::make('disponibilite')
+                    ->label('Disponibilité')
+                    ->required(),
+
+                     Forms\Components\Toggle::make('etat')
+                    ->label('Etat de l\'appareil')
+                    ->required(),
+
+                ]),
 
                     SpatieMediaLibraryFileUpload::make('image')
                     ->label('Image')

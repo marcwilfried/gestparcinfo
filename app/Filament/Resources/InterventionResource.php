@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use App\Models\Panne;
 use App\Models\Piece;
@@ -148,10 +149,27 @@ class InterventionResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        if (auth()->user()->hasRole(['Technicien'])) {
+            return parent::getEloquentQuery()
+                ->whereHas('user', function($q){
+                    $q->where('id', auth()->user()->id);
+                })
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
+        elseif (auth()->user()->hasRole(['super_admin'])) {
+            return parent::getEloquentQuery()
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
+        else {
+            return parent::getEloquentQuery()
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
     }
 
     public static function getFormSchema(?string $section = null): array
@@ -159,10 +177,18 @@ class InterventionResource extends Resource
         if ($section === 'pieces') {
             return [
                 Card::make()->schema([
-                    Select::make('panne_id')
-                    ->label('Les pannes')
-                    ->options(Panne::all()->pluck('title','id'))
-                    ->multiple(),
+                    Grid::make(2)->schema([
+                        Select::make('panne_id')
+                        ->label('Les pannes')
+                        ->options(Panne::all()->pluck('title','id'))
+                        ->multiple(),
+
+                        Select::make('user_id')
+                        ->label('Techniciens')
+                        ->relationship('user', 'name')
+                        ->required(fn (Page $livewire) => ($livewire instanceof CreateAppareil)),
+                    ])
+
                 ]),
 
                 Card::make()->schema([

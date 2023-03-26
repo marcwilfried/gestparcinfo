@@ -93,7 +93,7 @@ class UserResource extends Resource
                         ->required(fn (Page $livewire) => ($livewire instanceof CreateUser)),
                     ]),
                     Grid::make(2)->schema([
-                        Select::make('type_user')
+                        Select::make('role_id')
                         ->relationship('roles', 'name')
                         ->options(Role::all()->pluck('name','id'))
                         ->multiple()

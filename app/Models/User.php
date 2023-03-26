@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Service;
 use App\Models\Appareil;
+use App\Models\Intervention;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Models\Role;
@@ -96,6 +97,12 @@ class User extends Authenticatable implements HasMedia
     {
         return $this->hasMany(Appareil::class);
     }
+
+    public function interventions()
+    {
+        return $this->hasMany(Intervention::class);
+    }
+
     public function service()
     {
         return $this->belongsTo(Service::class);

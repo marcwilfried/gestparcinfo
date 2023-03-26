@@ -283,7 +283,14 @@ class AppareilResource extends Resource
                     SoftDeletingScope::class,
                 ]);
         }
-        elseif (auth()->user()->hasRole(['Technicien', 'super_admin'])) {
+        elseif (auth()->user()->hasRole(['Technicien'])) {
+            return parent::getEloquentQuery()
+                ->where('etat',0)
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]);
+        }
+        elseif (auth()->user()->hasRole(['super_admin'])) {
             return parent::getEloquentQuery()
                 ->withoutGlobalScopes([
                     SoftDeletingScope::class,

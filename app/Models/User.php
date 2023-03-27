@@ -93,6 +93,11 @@ class User extends Authenticatable implements HasMedia
         'profile_photo_url',
     ];
 
+    public function pannes()
+    {
+        return $this->hasMany(Panne::class);
+    }
+
     public function appareils()
     {
         return $this->hasMany(Appareil::class);

@@ -21,6 +21,7 @@ class Panne extends Model
         'intervention_id',
         'created_at',
         'updated_at',
+        'user_created',
     ];
     public function interventions()
     {
@@ -32,7 +33,7 @@ class Panne extends Model
     }
     public function userCreated()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,'user_id');
     }
 
     public function userUpdated()

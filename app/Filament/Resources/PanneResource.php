@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use App\Models\Panne;
+use App\Models\Appareil;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
 use Filament\Resources\Resource;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -23,6 +26,7 @@ use Filament\Tables\Actions\RestoreBulkAction;
 use App\Filament\Resources\PanneResource\Pages;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Database\Eloquent\Factories\Relationship;
 use App\Filament\Resources\PanneResource\Pages\EditPanne;
 use App\Filament\Resources\PanneResource\Pages\ListPannes;
 use App\Filament\Resources\PanneResource\RelationManagers;
@@ -42,12 +46,21 @@ class PanneResource extends Resource
         return $form
             ->schema([
                 Card::make()->schema([
-                    Forms\Components\TextInput::make('title')
-                    ->label('Titre')
-                    ->maxLength(255),
-                Forms\Components\MarkdownEditor::make('description')
+                    Grid::make(2)->schema([
+                        TextInput::make('title')
+                        ->label('Titre')
+                        ->maxLength(255),
+
+                        Select::make('appareil_id')
+                        ->relationship('appareil','title',fn (Builder $query) => $query->where('etat',0)),
+
+                    ]),
+
+                    MarkdownEditor::make('description')
                     ->label('Description')
                     ->maxLength(255),
+
+
                 ])
             ]);
     }
@@ -58,6 +71,14 @@ class PanneResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                 ->label('Titre')
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('appareil.title')
+                ->label('Appareils en panne')
+                ->searchable(),
+
+                Tables\Columns\TextColumn::make('user_created.name')
+                ->label('Crée par')
                 ->searchable(),
 
                 Tables\Columns\TextColumn::make('description')

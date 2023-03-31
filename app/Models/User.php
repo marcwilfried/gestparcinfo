@@ -8,7 +8,6 @@ use App\Models\Intervention;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\Permission\Models\Role;
-use Filament\Forms\Components\Select;
 use Laravel\Jetstream\HasProfilePhoto;
 use Spatie\Permission\Traits\HasRoles;
 use Filament\Notifications\Notification;

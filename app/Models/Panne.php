@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Appareil;
 use App\Models\Intervention;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +34,7 @@ class Panne extends Model
     }
     public function userCreated()
     {
-        return $this->belongsTo(User::class,'user_id');
+        return $this->belongsTo(User::class, 'user_created');
     }
 
     public function userUpdated()

@@ -77,15 +77,21 @@ class PanneResource extends Resource
                 ->label('Appareils en panne')
                 ->searchable(),
 
-                Tables\Columns\TextColumn::make('user_created.name')
+                Tables\Columns\TextColumn::make('userCreated.name')
                 ->label('Crée par')
-                ->searchable(),
+                ->searchable()
+                ->toggleable()
+                ->sortable(),
 
                 Tables\Columns\TextColumn::make('description')
                 ->label('Description')
-                ->searchable(),
+                ->searchable()
+                ->toggleable()
+                ->sortable(),
+
                 Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                ->label('Crée le')
+                ->dateTime(),
             ])
             ->defaultSort(column:'created_at', direction:'desc')
             ->filters([

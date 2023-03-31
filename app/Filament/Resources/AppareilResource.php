@@ -268,6 +268,7 @@ class AppareilResource extends Resource
         return [
             'index' => Pages\ListAppareils::route('/'),
             'create' => Pages\CreateAppareil::route('/create'),
+            'view' => Pages\ViewAppareil::route('/{record}'),
             'edit' => Pages\EditAppareil::route('/{record}/edit'),
         ];
     }

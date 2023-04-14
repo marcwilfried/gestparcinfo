@@ -16,19 +16,25 @@ use Filament\Resources\Resource;
 use Filament\Resources\Pages\Page;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
+use Filament\Tables\Filters\Filter;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Select;
 use Forms\Components\MarkdownEditort;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Repeater;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\MarkdownEditor;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\ForceDeleteAction;
 use Filament\Tables\Actions\RestoreBulkAction;
 use Filament\Tables\Actions\ForceDeleteBulkAction;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -39,6 +45,7 @@ use App\Filament\Resources\InterventionResource\RelationManagers;
 use App\Filament\Resources\InterventionResource\Pages\EditIntervention;
 use App\Filament\Resources\InterventionResource\Pages\ListInterventions;
 use App\Filament\Resources\InterventionResource\Pages\CreateIntervention;
+use App\Filament\Resources\InterventionResource\RelationManagers\PannesRelationManager;
 
 class InterventionResource extends Resource
 {
@@ -112,6 +119,23 @@ class InterventionResource extends Resource
             ->defaultSort(column:'created_at', direction:'desc')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+
+                Filter::make('created_at')
+                ->form([
+                    Forms\Components\DatePicker::make('created_from')->label('Du'),
+                    Forms\Components\DatePicker::make('created_until')->label('Au'),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['created_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                        );
+                }),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

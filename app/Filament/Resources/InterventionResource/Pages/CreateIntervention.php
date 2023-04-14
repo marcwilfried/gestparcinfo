@@ -2,10 +2,12 @@
 
 namespace App\Filament\Resources\InterventionResource\Pages;
 
+use App\Mail\UserMail;
 use Filament\Pages\Actions;
 use Illuminate\Support\Str;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
+use Illuminate\Support\Facades\Mail;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Repeater;
@@ -35,5 +37,12 @@ class CreateIntervention extends CreateRecord
                     Card::make(InterventionResource::getFormSchema('pieces')),
                 ]),
         ];
+    }
+
+    protected function afterCreate(): void
+    {
+        $model = $this->record;
+        Mail::to('arcwilfried@gmail.com')->send(new UserMail($model));
+        //dd('succes');
     }
 }
